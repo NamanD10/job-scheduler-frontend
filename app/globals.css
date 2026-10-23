@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --color-paper: 250 250 248;   /* #FAFAF8 */
+  --color-surface: 255 255 255; /* #FFFFFF - inputs, raised elements */
+  --color-ink: 26 29 41;        /* #1A1D29 */
+  --color-line: 227 225 217;    /* #E3E1D9 */
+  --color-muted: 107 106 99;    /* #6B6A63 */
+  --color-cobalt: 45 91 255;    /* #2D5BFF */
+  --color-done: 26 127 90;      /* #1A7F5A */
+  --color-pending: 202 138 4;   /* #CA8A04 */
+  --color-failed: 192 57 43;    /* #C0392B */
+}
+
+.dark {
+  color-scheme: dark;
+  --color-paper: 18 19 24;      /* #121318 */
+  --color-surface: 27 28 35;    /* #1b1c23 */
+  --color-ink: 237 236 230;     /* #edece6 */
+  --color-line: 45 47 58;       /* #2d2f3a */
+  --color-muted: 142 141 132;   /* #8e8d84 */
+  --color-cobalt: 107 142 255;  /* #6b8eff */
+  --color-done: 52 211 153;     /* #34d399 */
+  --color-pending: 250 204 21;  /* #fbbf24 */
+  --color-failed: 248 113 113;  /* #f87171 */
+}
+
+html, body {
+  background-color: rgb(var(--color-paper));
+  color: rgb(var(--color-ink));
+}
+
+* {
+  border-color: rgb(var(--color-line));
+}
+
+::selection {
+  background-color: rgb(var(--color-cobalt));
+  color: rgb(var(--color-paper));
+}
+
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid rgb(var(--color-cobalt));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
