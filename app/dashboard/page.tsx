@@ -95,7 +95,7 @@ export default function DashboardPage() {
             onClick={() => setPanelOpen(true)}
             className="focus-ring bg-ink text-paper px-4 py-2 text-sm font-medium rounded-sm hover:bg-cobalt transition-colors"
           >
-            Create task
+            Create New Task
           </button>
         </div>
 
