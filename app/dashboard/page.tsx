@@ -1,32 +1,48 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { getTasks, getQueueStats } from "@/lib/api";
-import type { Task, QueueStats } from "@/lib/types";
+import { getTasks } from "@/lib/api";
+import { formatRelative } from "@/lib/format";
+import { useDashboardStats } from "@/lib/useDashboardStats";
+import { useNow } from "@/lib/useNow";
+import type { Task } from "@/lib/types";
 import Navbar from "@/components/Navbar";
-import StatsStrip from "@/components/StatsStrip";
+import TaskOverview from "@/components/TaskOverview";
+import ExecutionStats from "@/components/ExecutionStats";
+import RecentExecutions from "@/components/RecentExecutions";
+import UpcomingRuns from "@/components/UpcomingRuns";
 import TaskList from "@/components/TaskList";
 import CreateTaskPanel from "@/components/CreateTaskPanel";
+
+function UpdatedLabel({ updatedAt, hasError }: { updatedAt: number | null; hasError: boolean }) {
+  const now = useNow(15_000);
+  if (!updatedAt) return null;
+  return (
+    <span className="text-xs font-mono text-muted">
+      updated {formatRelative(updatedAt, now)}
+      {hasError && " · some stats couldn't refresh"}
+    </span>
+  );
+}
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [stats, setStats] = useState<QueueStats | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [tasksLoading, setTasksLoading] = useState(true);
   const [panelOpen, setPanelOpen] = useState(false);
 
-  const loadData = useCallback(async () => {
+  const { data, loading: statsLoading, hasError, updatedAt, refresh } = useDashboardStats(!!user);
+
+  const loadTasks = useCallback(async () => {
     try {
-      const [taskData, statsData] = await Promise.all([getTasks(), getQueueStats()]);
-      setTasks(taskData);
-      setStats(statsData);
+      setTasks(await getTasks());
     } catch {
-      // surfaced via empty state; queue stats endpoint failing shouldn't block task list
+      // surfaced via empty state
     } finally {
-      setLoading(false);
+      setTasksLoading(false);
     }
   }, []);
 
@@ -36,8 +52,27 @@ export default function DashboardPage() {
       router.replace("/login");
       return;
     }
-    loadData();
-  }, [authLoading, user, router, loadData]);
+    loadTasks();
+  }, [authLoading, user, router, loadTasks]);
+
+  // Task statuses change as jobs run. Reload the list whenever the execution
+  // count moves, instead of polling it separately.
+  const executionCount = data.executionSummary?.totalExecutions;
+  const prevCount = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (executionCount === undefined) return;
+    if (prevCount.current !== undefined && prevCount.current !== executionCount) {
+      loadTasks();
+    }
+    prevCount.current = executionCount;
+  }, [executionCount, loadTasks]);
+
+  function handleCreated() {
+    loadTasks();
+    refresh();
+    // Immediate jobs usually finish within seconds; check again shortly after.
+    setTimeout(refresh, 4000);
+  }
 
   if (authLoading || !user) {
     return (
@@ -52,7 +87,10 @@ export default function DashboardPage() {
       <Navbar />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-medium">Tasks</h1>
+          <div className="flex items-baseline gap-4">
+            <h1 className="text-xl font-medium">Dashboard</h1>
+            <UpdatedLabel updatedAt={updatedAt} hasError={hasError} />
+          </div>
           <button
             onClick={() => setPanelOpen(true)}
             className="focus-ring bg-ink text-paper px-4 py-2 text-sm font-medium rounded-sm hover:bg-cobalt transition-colors"
@@ -61,21 +99,38 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        <div className="mb-8">
-          <StatsStrip stats={stats} />
+        <div className="space-y-4">
+          <TaskOverview counts={data.taskTypes} />
+          <ExecutionStats
+            summary={data.executionSummary}
+            last24h={data.last24h}
+            avgDuration={data.avgDuration}
+          />
         </div>
 
-        {loading ? (
-          <p className="font-mono text-sm text-muted">Loading tasks…</p>
-        ) : (
-          <TaskList tasks={tasks} />
-        )}
+        <div className="mt-8 grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <RecentExecutions items={data.recent} loading={statsLoading} />
+          </div>
+          <div>
+            <UpcomingRuns items={data.upcoming} loading={statsLoading} />
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <h2 className="text-xl font-medium mb-6">Tasks</h2>
+          {tasksLoading ? (
+            <p className="font-mono text-sm text-muted">Loading tasks…</p>
+          ) : (
+            <TaskList tasks={tasks} />
+          )}
+        </div>
       </main>
 
       <CreateTaskPanel
         open={panelOpen}
         onClose={() => setPanelOpen(false)}
-        onCreated={loadData}
+        onCreated={handleCreated}
       />
     </div>
   );
