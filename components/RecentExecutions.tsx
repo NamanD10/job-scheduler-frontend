@@ -11,33 +11,32 @@ function Row({ item, now }: { item: RecentExecution; now: number }) {
   const taskId = item.taskId ?? item.id;
 
   const content = (
-    <>
-      <div className="min-w-0">
-        <div className="text-sm truncate">{item.title}</div>
-        <div className="text-xs text-muted font-mono truncate">
-          {item.reqMethod} {item.targetUrl}
-        </div>
+  <>
+    <div className="min-w-0">
+      <div className="text-sm truncate">{item.title}</div>
+      <div className="text-xs text-muted font-mono truncate">
+        {item.reqMethod} {item.targetUrl}
       </div>
-      <span
-        className={`inline-flex items-center gap-1.5 font-mono text-xs ${ok ? "text-done" : "text-failed"}`}
-      >
+    </div>
+
+    <div className="grid grid-cols-[3.5rem_1fr] sm:grid-cols-[3.5rem_4.5rem_1fr] items-center gap-2 font-mono text-xs">
+      <span className={`inline-flex items-center gap-1.5 ${ok ? "text-done" : "text-failed"}`}>
         <span className={`h-1.5 w-1.5 rounded-full ${ok ? "bg-done" : "bg-failed"}`} />
         {code}
       </span>
-      <div className="hidden sm:block text-xs font-mono text-muted text-right">
-        {formatDuration(item.durationMs)}
-      </div>
-      <div
-        className="text-xs font-mono text-muted text-right whitespace-nowrap"
+      <span className="hidden sm:block text-muted">{formatDuration(item.durationMs)}</span>
+      <span
+        className="text-muted whitespace-nowrap truncate"
         title={formatExactTime(item.executionDate)}
       >
         {formatRelative(item.executionDate, now)}
-      </div>
-    </>
-  );
+      </span>
+    </div>
+  </>
+);
 
-  const className =
-    "grid grid-cols-[1fr_auto_auto] sm:grid-cols-[1fr_auto_auto_auto] gap-4 items-center px-4 py-3 border-b border-line last:border-b-0";
+const className =
+  "grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,65fr)_minmax(0,35fr)] gap-4 items-center px-4 py-3 border-b border-line last:border-b-0";
 
   return taskId ? (
     <Link
