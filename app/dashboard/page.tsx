@@ -21,7 +21,7 @@ function UpdatedLabel({ updatedAt, hasError }: { updatedAt: number | null; hasEr
   if (!updatedAt) return null;
   return (
     <span className="text-xs font-mono text-muted">
-      updated {formatRelative(updatedAt, now)}
+      Updated {formatRelative(updatedAt, now)}
       {hasError && " · some stats couldn't refresh"}
     </span>
   );
