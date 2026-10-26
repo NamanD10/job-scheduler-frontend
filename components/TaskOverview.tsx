@@ -13,7 +13,7 @@ export default function TaskOverview({ counts }: { counts: TaskTypeCounts | null
     <section className="border border-line px-6 py-5 flex flex-wrap items-center justify-around gap-x-10 gap-y-4">
       <div>
         <div className="text-stat font-medium tabular-nums">{total ?? "—"}</div>
-        <div className="mt-1 text-xs text-muted">total tasks</div>
+        <div className="mt-1 text-xs text-muted">Total Tasks</div>
       </div>
 
       <div className="flex flex-wrap gap-3">

@@ -21,22 +21,25 @@ export default function ExecutionStats({
 }) {
   const hasRuns = (summary?.totalExecutions ?? 0) > 0;
   const hasTimings = (avgDuration?.sampleSize ?? 0) > 0;
+  const failedExecutions = summary
+  ? summary.totalExecutions - summary.successfulExecutions
+  : null;
 
   return (
     <section className="grid gap-4 md:grid-cols-4">
       <div className="border border-line col-span-2 px-6 py-5 flex gap-10">
-        <Stat label="total executions" value={summary?.totalExecutions ?? "—"} />
-        <Stat label="successful executions" value={summary?.successfulExecutions ?? "—"} />
-        <Stat label="success rate" value={summary && hasRuns ? `${summary.successRate}%` : "—"} />
+        <Stat label="Successful executions" value={summary?.successfulExecutions ?? "—"} />
+        <Stat label="Failed executions" value={failedExecutions ?? "—"} />
+        <Stat label="Success rate" value={summary && hasRuns ? `${summary.successRate}%` : "—"} />
       </div>
 
       <div className="border border-line col-span-1 px-6 py-5">
-        <Stat label="executions in past 24 hrs" value={last24h?.executionsLast24h ?? "—"} />
+        <Stat label="Executions in past 24 hrs" value={last24h?.executionsLast24h ?? "—"} />
       </div>
 
       <div className="border border-line col-span-1 px-6 py-5">
         <Stat
-          label="avg response time"
+          label="Average response time"
           value={avgDuration && hasTimings ? formatDuration(avgDuration.averageDurationMs) : "—"}
         />
       </div>
