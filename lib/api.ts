@@ -1,4 +1,15 @@
-import type { AuthUser, CreateTaskInput, QueueStats, Task } from "./types";
+import type {
+  AuthUser,
+  AvgDuration,
+  CreateTaskInput,
+  ExecutionSummary,
+  Last24h,
+  QueueStats,
+  RecentExecution,
+  Task,
+  TaskTypeCounts,
+  UpcomingRun,
+} from "./types";
 
 // Set NEXT_PUBLIC_API_URL in .env.local to your TaskSmith backend origin,
 // e.g. http://localhost:3000. Must be one of better-auth's trustedOrigins
@@ -90,3 +101,23 @@ export async function deleteTask(id: string) {
 export async function getQueueStats() {
   return request<QueueStats>("/queue/stats");
 }
+
+//Per User Dashboard stats
+
+export const getTaskTypeCounts = (signal?: AbortSignal) =>
+  request<TaskTypeCounts>("/stats/task-type", { signal });
+ 
+export const getExecutionSummary = (signal?: AbortSignal) =>
+  request<ExecutionSummary>("/stats/success-rate", { signal });
+ 
+export const getLast24h = (signal?: AbortSignal) =>
+  request<Last24h>("/stats/last-24h", { signal });
+ 
+export const getAvgDuration = (signal?: AbortSignal) =>
+  request<AvgDuration>("/stats/avg-duration", { signal });
+ 
+export const getRecentExecutions = (signal?: AbortSignal) =>
+  request<RecentExecution[]>("/stats/recent-executions", { signal });
+ 
+export const getUpcomingRuns = (signal?: AbortSignal) =>
+  request<UpcomingRun[]>("/stats/upcoming-runs", { signal });

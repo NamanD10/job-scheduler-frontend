@@ -23,6 +23,53 @@ export interface Task {
   updatedAt: string;
 }
 
+export interface TaskTypeCounts {
+  immediate: number;
+  scheduled: number;
+  repeatable: number;
+}
+ 
+// /stats/success-rate
+export interface ExecutionSummary {
+  totalExecutions: number;
+  successfulExecutions: number;
+  successRate: number; // percentage, 0-100
+}
+ 
+// /stats/last-24h
+export interface Last24h {
+  executionsLast24h: number;
+  since: string;
+}
+ 
+// /stats/avg-duration
+export interface AvgDuration {
+  averageDurationMs: number;
+  sampleSize: number;
+}
+ 
+// /stats/recent-executions
+export interface RecentExecution {
+  taskId?: string;
+  id?: string; // older shape: task id was returned as `id`
+  title: string;
+  targetUrl: string;
+  reqMethod: ReqMethod;
+  statusCode: number | null; // 0 = network error / no response
+  durationMs: number | null;
+  executionDate: string;
+}
+ 
+// /stats/upcoming-runs
+export interface UpcomingRun {
+  taskId?: string;
+  id?: string;
+  title: string;
+  targetUrl: string;
+  reqMethod: ReqMethod;
+  nextRunAt: string;
+}
+
 export interface QueueStats {
   queue: {
     pending: number;
