@@ -109,3 +109,29 @@ export interface CreateTaskInput {
   headers?: Record<string, string>;
   reqBody?: Record<string, unknown> | string;
 }
+
+export interface TaskExecution {
+  id: string;
+  taskId: string;
+  executionDate: string;
+  statusCode: number | null; // 0 = network error / no response
+  statusMessage: string | null;
+  durationMs: number | null;
+  responseBody: string | null;
+  responseHeaders: Record<string, string> | null;
+  errorCode: string | null;
+  errorMessage: string | null;
+}
+
+export interface TaskExecutionSummary {
+  total: number;
+  successful: number;
+  successRate: number;
+  averageDurationMs: number;
+}
+
+export interface TaskExecutionsPage {
+  items: TaskExecution[];
+  nextCursor: string | null;
+  summary?: TaskExecutionSummary;
+}

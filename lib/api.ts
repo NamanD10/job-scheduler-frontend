@@ -7,6 +7,7 @@ import type {
   QueueStats,
   RecentExecution,
   Task,
+  TaskExecutionsPage,
   TaskTypeCounts,
   UpcomingRun,
 } from "./types";
@@ -94,6 +95,12 @@ export async function deleteTask(id: string) {
   return request<{ message: string; deletedTask: Task }>(`/tasks/${id}`, {
     method: "DELETE",
   });
+}
+
+export function getTaskExecutions(id: string, cursor?: string | null, limit = 20) {
+  const params = new URLSearchParams({ limit: String(limit) });
+  if (cursor) params.set("cursor", cursor);
+  return request<TaskExecutionsPage>(`/tasks/${id}/responses?${params}`);
 }
 
 // ---- Queue ----
