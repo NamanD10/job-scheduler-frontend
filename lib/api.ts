@@ -12,10 +12,9 @@ import type {
   UpcomingRun,
 } from "./types";
 
-// Set NEXT_PUBLIC_API_URL in .env.local to your TaskSmith backend origin,
-// e.g. http://localhost:3000. Must be one of better-auth's trustedOrigins
-// on the backend for cookies to work across origins.
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+export type SocialProvider = "github" | "google";
 
 export class ApiError extends Error {
   status: number;
@@ -72,6 +71,26 @@ export async function signOut() {
 
 export async function getSession() {
   return request<{ user: AuthUser; session: unknown } | null>("/api/auth/get-session");
+}
+
+export async function signInWithProvider(provider: SocialProvider) {
+  const origin = window.location.origin; //to get the domain of frontend 
+
+  const res = await request<{ url?: string; redirect: boolean }>(
+    "/api/auth/sign-in/social",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        provider,
+        callbackURL: `${origin}/dashboard`,
+        newUserCallbackURL: `${origin}/dashboard`,
+        errorCallbackURL: `${origin}/login`,
+      }),
+    }
+  );
+
+  if (!res.url) throw new ApiError(500, "Couldn't start sign-in. Try again.");
+  window.location.href = res.url;
 }
 
 // ---- Tasks ----
