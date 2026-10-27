@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { signIn, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import ThemeToggle from "@/components/ThemeToggle";
+import OAuthButtons from "@/components/OAuthButtons";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -41,6 +42,8 @@ export default function LoginPage() {
           <p className="mt-1 text-sm text-muted">Sign in to view your scheduled tasks.</p>
         </div>
 
+        <OAuthButtons />
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm mb-1.5 text-muted">
