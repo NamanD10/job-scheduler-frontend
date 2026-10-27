@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { signUp, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import ThemeToggle from "@/components/ThemeToggle";
+import OAuthButtons from "@/components/OAuthButtons";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -42,6 +43,8 @@ export default function SignupPage() {
           <p className="mt-1 text-sm text-muted">Create an account to start scheduling tasks.</p>
         </div>
 
+        <OAuthButtons />
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm mb-1.5 text-muted">
