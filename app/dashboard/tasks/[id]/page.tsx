@@ -8,6 +8,7 @@ import { getTaskById, deleteTask, ApiError } from "@/lib/api";
 import type { Task } from "@/lib/types";
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
+import ExecutionHistory from "@/components/ExecutionHistory";
 
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -126,6 +127,8 @@ export default function TaskDetailPage() {
                 />
               )}
             </dl>
+
+            <ExecutionHistory taskId={id} />
           </>
         )}
       </main>
