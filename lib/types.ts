@@ -3,7 +3,6 @@ export type ReqMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 export interface Task {
   id: string;
-  userId: string;
   title: string;
   targetUrl: string;
   scheduledAt: string | null;
@@ -98,7 +97,6 @@ export interface AuthUser {
 }
 
 export interface CreateTaskInput {
-  userId: string; // backend requires this in the body alongside the session
   title: string;
   targetUrl: string;
   reqMethod: ReqMethod;
