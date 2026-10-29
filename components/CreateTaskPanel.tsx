@@ -65,7 +65,6 @@ export default function CreateTaskPanel({
     setSubmitting(true);
     try {
       await createTask({
-        userId: user.id,
         title,
         targetUrl,
         reqMethod,
