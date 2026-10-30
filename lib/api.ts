@@ -12,7 +12,9 @@ import type {
   UpcomingRun,
 } from "./types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const DEMO_EMAIL = process.env.DEMO_EMAIL;
+const DEMO_PASSWORD = process.env.DEMO_PASSWORD;
 
 export type SocialProvider = "github" | "google";
 
@@ -62,6 +64,13 @@ export async function signIn(email: string, password: string) {
   return request<{ user: AuthUser }>("/api/auth/sign-in/email", {
     method: "POST",
     body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function demoSignIn() {
+  return request<{ user: AuthUser }>("/api/auth/sign-in/email", {
+    method: "POST",
+    body: JSON.stringify({ DEMO_EMAIL, DEMO_PASSWORD }),
   });
 }
 
