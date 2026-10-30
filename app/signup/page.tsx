@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signUp, ApiError } from "@/lib/api";
+import { signUp, demoSignIn, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import ThemeToggle from "@/components/ThemeToggle";
 import OAuthButtons from "@/components/OAuthButtons";
@@ -31,6 +31,19 @@ export default function SignupPage() {
       setSubmitting(false);
     }
   }
+
+  async function handleDemoSignIn() {
+    try {    
+      await demoSignIn();
+      await refresh();
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Couldn't sign in. Try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6">
@@ -104,6 +117,18 @@ export default function SignupPage() {
             {submitting ? "Creating account…" : "Create account"}
           </button>
         </form>
+
+        <div className="my-6 flex items-center gap-3 text-xs text-muted">
+          <span className="h-px flex-1 bg-line" />
+            or
+          <span className="h-px flex-1 bg-line" />
+        </div>
+        <button
+            onClick={handleDemoSignIn}
+            className="focus-ring w-full flex items-center justify-center gap-2 border border-line bg-surface py-2.5 text-sm rounded-sm hover:border-ink transition-colors disabled:opacity-50"
+        >
+          {"Demo sign in"}
+        </button>
 
         <p className="mt-6 text-sm text-muted">
           Already have an account?{" "}
