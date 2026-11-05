@@ -52,8 +52,8 @@ export default function SignupPage() {
       </div>
       <div className="w-full max-w-sm">
         <div className="mb-10">
-          <h1 className="text-2xl font-medium tracking-tight">TaskSmith</h1>
-          <p className="mt-1 text-sm text-muted">Create an account to start scheduling tasks.</p>
+          <h1 className="text-2xl font-medium tracking-tight">Pingr</h1>
+          <p className="mt-1 text-sm text-muted">Create an account to start scheduling jobs.</p>
         </div>
 
         <OAuthButtons />
