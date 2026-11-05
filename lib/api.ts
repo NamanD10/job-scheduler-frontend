@@ -13,8 +13,8 @@ import type {
 } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const DEMO_EMAIL = process.env.DEMO_EMAIL;
-const DEMO_PASSWORD = process.env.DEMO_PASSWORD;
+const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL;
+const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD;
 
 export type SocialProvider = "github" | "google";
 
