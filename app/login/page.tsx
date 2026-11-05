@@ -32,13 +32,17 @@ export default function LoginPage() {
   }
 
   async function handleDemoSignIn() {
+    setError(null);
+    setSubmitting(true);
     try {
-      
-      await demoSignIn();
+      const email = process.env.NEXT_PUBLIC_DEMO_EMAIL;
+      const password = process.env.NEXT_PUBLIC_DEMO_PASSWORD;
+      if(!email || !password) throw new Error("Demo credentials not configured");
+      await signIn(email, password);
       await refresh();
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Couldn't sign in. Try again.");
+      setError(err instanceof ApiError ? err.message : "Demo Sign in failed.");
     } finally {
       setSubmitting(false);
     }
@@ -52,8 +56,8 @@ export default function LoginPage() {
       </div>
       <div className="w-full max-w-sm">
         <div className="mb-10">
-          <h1 className="text-2xl font-medium tracking-tight">TaskSmith</h1>
-          <p className="mt-1 text-sm text-muted">Sign in to view your scheduled tasks.</p>
+          <h1 className="text-2xl font-medium tracking-tight">Pingr</h1>
+          <p className="mt-1 text-sm text-muted">Sign in to view your scheduled jobs.</p>
         </div>
 
         <OAuthButtons />
