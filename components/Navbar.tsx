@@ -11,7 +11,7 @@ export default function Navbar() {
     <header className="border-b border-line">
       <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
         <Link href="/dashboard" className="text-lg font-medium tracking-tight">
-          TaskSmith
+          Pingr
         </Link>
         <div className="flex items-center gap-4">
           {user && <span className="text-sm text-muted font-mono">{user.name}</span>}
